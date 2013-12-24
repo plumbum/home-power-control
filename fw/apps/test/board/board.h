@@ -89,14 +89,18 @@
  * PA3  - Push Pull output  (BUZZER).
  * PA11 - Normal input      (USB DM).
  * PA12 - Normal input      (USB DP).
+ * PA15 - Push Pull output  (LED2).
  */
-#define VAL_GPIOACRL            0x33333888      /*  PA7...PA0 */
+#define VAL_GPIOACRL            0x33333838      /*  PA7...PA0 */
 #define VAL_GPIOACRH            0x38888888      /* PA15...PA8 */
-#define VAL_GPIOAODR            0xFFFFFF07
+#define VAL_GPIOAODR            0xFFFF7F07
 
 /*
  * Port B setup.
  * Everything input with pull-up except:
+ * PB0  - Push Pull output  (LED4).
+ * PB1  - Push Pull output  (LED3).
+ * PB3  - Push Pull output  (LED1).
  * PB6  - Alternative Open Drain        (I2C 1 SCL)
  * PB7  - Alternative Open Drain        (I2C 1 SDA)
  * PB8  - Normal input      (Button 1).
@@ -107,7 +111,7 @@
  */
 #define VAL_GPIOBCRL            0x88883833      /*  PB7...PB0 */
 #define VAL_GPIOBCRH            0x88888888      /* PB15...PB8 */
-#define VAL_GPIOBODR            0xFFFFFFFF
+#define VAL_GPIOBODR            0xFFFFFFF4
 
 /*
  * Port C setup.
@@ -144,12 +148,12 @@
 /*
  * USB bus activation macro, required by the USB driver.
  */
-#define usb_lld_connect_bus(usbp) palClearPad(GPIOC, GPIOC_USB_DISC)
+#define usb_lld_connect_bus(usbp) palClearPad(GPIOA, GPIOA_USB_DISC)
 
 /*
  * USB bus de-activation macro, required by the USB driver.
  */
-#define usb_lld_disconnect_bus(usbp) palSetPad(GPIOC, GPIOC_USB_DISC)
+#define usb_lld_disconnect_bus(usbp) palSetPad(GPIOA, GPIOA_USB_DISC)
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus

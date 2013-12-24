@@ -78,6 +78,9 @@ CSRC = $(PORTSRC) \
        $(BOARDSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        $(CHIBIOS)/os/various/syscalls.c \
+       $(CHIBIOS)/os/various/chprintf.c \
+       $(CHIBIOS)/os/various/shell.c \
+	   usb_cdc.c \
        main.c \
        #$(CHIBIOS)/os/various/chrtclib.c \
 
@@ -211,3 +214,8 @@ include $(CHIBIOS)/os/ports/GCC/ARMCMx/rules.mk
 
 include ../common/openocd.mk
 
+
+tags:
+	ctags -R --c++-kinds=+p --fields=+iaS --extra=+q . ../common ../../os
+
+.PHONY: tags
