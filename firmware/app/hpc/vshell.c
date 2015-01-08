@@ -9,7 +9,7 @@
 
 #include "shell.h"
 #include "chprintf.h"
-
+#include "env.h"
 
 static Thread *shelltp = NULL;
 
@@ -104,23 +104,7 @@ static void cmd_off(BaseSequentialStream *chp, int argc, char *argv[])
 }
 
 static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
-    static uint8_t buf[] =
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    static uint8_t buf[] = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
     (void)argv;
     if (argc > 0) {
@@ -135,15 +119,18 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 
+/*
 char* strtoupper(char* str)
 {
     char* p = str;
     char c;
     while((c = *p) != 0) {
-        *p++ = toupper(c);
+        c = (char)toupper(c);
+        *p++ = c;
     }
     return str;
 }
+*/
 
 static void cmd_at(BaseSequentialStream *chp, int argc, char *argv[])
 {
@@ -161,7 +148,75 @@ static void cmd_at(BaseSequentialStream *chp, int argc, char *argv[])
     }
 }
 
+static void cmd_init(BaseSequentialStream *chp, int argc, char *argv[])
+{
+    (void)argv;
+    if (argc > 0) {
+        chprintf(chp, "Usage: init\r\n");
+        return;
+    }
+    /* Reset wifi */
+    palClearPad(IOPORT2, GPIOB_ESPRST);
+    chThdSleepMilliseconds(50);
+    palSetPad(IOPORT2, GPIOB_ESPRST);
+    chThdSleepMilliseconds(50);
+}
+
+uint8_t rx_data[256];
+static void cmd_dump(BaseSequentialStream *chp, int argc, char *argv[])
+{
+    (void)argv;
+    (void)argc;
+    int i;
+    msg_t status;
+
+    for(i=0; i<=9; i++) {
+        rx_data[i] = '0'+i;
+    }
+    rx_data[15] = 1;
+
+    chprintf(chp, "Write page 0\r\n");
+    status = envWritePage(rx_data, 0);
+    if(status != RDY_OK) {
+        chprintf(chp, "I2C write error %08x\r\n", i2c_errors);
+        return;
+    }
+
+    rx_data[15] = 2;
+    chprintf(chp, "Write page 8\r\n");
+    status = envWritePage(rx_data, 8);
+    if(status != RDY_OK) {
+        chprintf(chp, "I2C write error %08x\r\n", i2c_errors);
+        return;
+    }
+
+
+    for(i=0; i<256; i++) {
+        rx_data[i] = 0;
+    }
+
+    chprintf(chp, "Read 0 block\r\n");
+    status = envReadBlock(rx_data, 0, 256);
+    if(status != RDY_OK) {
+        chprintf(chp, "I2C read error %08x\r\n", i2c_errors);
+        return;
+    }
+
+    for(i=0; i<256; i++) {
+        if((i & 15) == 0) {
+            chprintf(chp, "%04x: ", i);
+        }
+        chprintf(chp, "%02x ", rx_data[i]);
+        if((i & 15) == 15) {
+            chprintf(chp, "\r\n");
+        }
+    }
+
+}
+
 static const ShellCommand commands[] = {
+    {"dump", cmd_dump},
+    {"init", cmd_init},
     {"at", cmd_at},
     {"on", cmd_on},
     {"off", cmd_off},

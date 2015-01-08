@@ -19,6 +19,7 @@
 
 #include "usb_cdc.h"
 #include "vshell.h"
+#include "env.h"
 
 #include "chprintf.h"
 
@@ -62,7 +63,7 @@ static msg_t psResponce(void *arg)
     while(TRUE) {
         int c = sdGet(&SD1);
         if(c >= 0) {
-            chnWrite(&SDU1, &c, 1);
+            chnWrite(&SDU1, (uint8_t*)(&c), 1);
         }
     }
     return 0;
@@ -91,6 +92,8 @@ int main(void)
      */
     halInit();
     chSysInit();
+
+    envInit();
 
     usbcdcInit();
 

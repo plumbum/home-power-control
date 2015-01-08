@@ -56,6 +56,12 @@
 #define GPIOA_OUT2              5
 #define GPIOA_OUT3              6
 #define GPIOA_OUT4              7
+
+#define GPIOB_ESPRST            12
+
+#define GPIOB_I2C1_SCL          6
+#define GPIOB_I2C1_SDA          7
+
 /*
  * I/O ports initial setup, this configuration is established soon after reset
  * in the initialization code.
@@ -95,13 +101,16 @@
 /*
  * Port B setup.
  * Everything input with pull-up except:
+ * PB6  - I2C-1 SCL (Open Drain, manual init)
+ * PB7  - I2C-1 SDA (Open Drain, manual init)
+ * PB13 - Output (ESP RST).
  * PB13 - Alternate output  (MMC SPI2 SCK).
  * PB14 - Normal input      (MMC SPI2 MISO).
  * PB15 - Alternate output  (MMC SPI2 MOSI).
  */
-#define VAL_GPIOBCRL            0xFF883833      /*  PB7...PB0 */
-#define VAL_GPIOBCRH            0x88888888      /* PB15...PB8 */
-#define VAL_GPIOBODR            0xFFFFFFF0
+#define VAL_GPIOBCRL            0x88883833      /*  PB7...PB0 */
+#define VAL_GPIOBCRH            0x88838888      /* PB15...PB8 */
+#define VAL_GPIOBODR            (0xFFFFFFF0 & ~((1<<GPIOB_ESPRST) | 0))
 
 /*
  * Port C setup.
