@@ -1,3 +1,7 @@
+.dep
+build
+tags
+
 # Compiled Object files
 *.slo
 *.lo
@@ -19,4 +23,5 @@ eagle.epf
 
 # Vim
 .*.swp
+
 

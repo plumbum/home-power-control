@@ -20,6 +20,8 @@
 #include "usb_cdc.h"
 #include "vshell.h"
 
+#include "chprintf.h"
+
 /*===========================================================================*/
 /* Generic code.                                                             */
 /*===========================================================================*/
@@ -53,6 +55,27 @@ static msg_t Thread1(void *arg)
     return 0;
 }
 
+static WORKING_AREA(waResponce, 1024);
+static msg_t psResponce(void *arg)
+{
+    (void)arg;
+    while(TRUE) {
+        int c = sdGet(&SD1);
+        if(c >= 0) {
+            chnWrite(&SDU1, &c, 1);
+        }
+    }
+    return 0;
+}
+
+static const SerialConfig sd1_config =
+{
+    115200,
+    0,
+    USART_CR2_STOP1_BITS | USART_CR2_LINEN,
+    0
+};
+
 /*
  * Application entry point.
  */
@@ -73,10 +96,13 @@ int main(void)
 
     vshellInit((BaseSequentialStream*)&SDU1);
 
+    sdStart(&SD1, &sd1_config);
+
     /*
      * Creates the blinker thread.
      */
     chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+    chThdCreateStatic(waResponce, sizeof(waResponce), NORMALPRIO, psResponce, NULL);
 
     /*
      * Normal main() thread activity, in this demo it does nothing except

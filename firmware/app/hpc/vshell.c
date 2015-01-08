@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <hal.h>
 
@@ -133,7 +134,35 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "\r\n\nstopped\r\n");
 }
 
+
+char* strtoupper(char* str)
+{
+    char* p = str;
+    char c;
+    while((c = *p) != 0) {
+        *p++ = toupper(c);
+    }
+    return str;
+}
+
+static void cmd_at(BaseSequentialStream *chp, int argc, char *argv[])
+{
+    switch(argc) {
+        case 0:
+            chprintf((BaseSequentialStream*)&SD1, "AT\r\n");
+            break;
+        case 1:
+            // strtoupper(argv[0]);
+            chprintf((BaseSequentialStream*)&SD1, "AT%s\r\n", argv[0]);
+            break;
+        default:
+            chprintf(chp, "Usage: at <data>\r\n");
+            break;
+    }
+}
+
 static const ShellCommand commands[] = {
+    {"at", cmd_at},
     {"on", cmd_on},
     {"off", cmd_off},
     {"mem", cmd_mem},
