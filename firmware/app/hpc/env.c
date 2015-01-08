@@ -31,7 +31,7 @@ void envInit(void)
 
 i2cflags_t i2c_errors;
 
-msg_t _envReadBlock(void* data, int offset, size_t bytes)
+msg_t _eepromReadBlock(void* data, int offset, size_t bytes)
 {
     msg_t status = RDY_OK;
 
@@ -52,11 +52,11 @@ msg_t _envReadBlock(void* data, int offset, size_t bytes)
     return status;
 }
 
-msg_t envReadBlock(void* data, int offset, size_t bytes)
+msg_t eepromReadBlock(void* data, int offset, size_t bytes)
 {
     msg_t status;
     i2cAcquireBus(&I2CD1);
-    status = _envReadBlock(data, offset, bytes);
+    status = _eepromReadBlock(data, offset, bytes);
     i2cReleaseBus(&I2CD1);
     if (status != RDY_OK) {
         i2c_errors = i2cGetErrors(&I2CD1);
@@ -64,7 +64,7 @@ msg_t envReadBlock(void* data, int offset, size_t bytes)
     return status;
 }
 
-msg_t _envWritePage(const void* data, int page)
+msg_t _eepromWritePage(const void* data, int page)
 {
     msg_t status, status1;
     uint8_t addr = EEPROM_ADDR | ((page/16) & 0x03);
@@ -98,11 +98,11 @@ msg_t _envWritePage(const void* data, int page)
  * @param page
  * @return msg_t
  */
-msg_t envWritePage(const void* data, int page)
+msg_t eepromWritePage(const void* data, int page)
 {
     msg_t status;
     i2cAcquireBus(&I2CD1);
-    status = _envWritePage(data, page);
+    status = _eepromWritePage(data, page);
     i2cReleaseBus(&I2CD1);
     if (status != RDY_OK) {
         i2c_errors = i2cGetErrors(&I2CD1);

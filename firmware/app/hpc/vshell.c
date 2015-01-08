@@ -167,16 +167,17 @@ static void cmd_dump(BaseSequentialStream *chp, int argc, char *argv[])
 {
     (void)argv;
     (void)argc;
-    int i;
+    int i, j;
     msg_t status;
 
+    /*
     for(i=0; i<=9; i++) {
         rx_data[i] = '0'+i;
     }
     rx_data[15] = 1;
 
     chprintf(chp, "Write page 0\r\n");
-    status = envWritePage(rx_data, 0);
+    status = eepromWritePage(rx_data, 0);
     if(status != RDY_OK) {
         chprintf(chp, "I2C write error %08x\r\n", i2c_errors);
         return;
@@ -184,34 +185,27 @@ static void cmd_dump(BaseSequentialStream *chp, int argc, char *argv[])
 
     rx_data[15] = 2;
     chprintf(chp, "Write page 8\r\n");
-    status = envWritePage(rx_data, 8);
+    status = eepromWritePage(rx_data, 8);
     if(status != RDY_OK) {
         chprintf(chp, "I2C write error %08x\r\n", i2c_errors);
         return;
     }
+    */
 
+    for(i=0; i<256; i++) { rx_data[i] = 0; }
 
-    for(i=0; i<256; i++) {
-        rx_data[i] = 0;
-    }
-
-    chprintf(chp, "Read 0 block\r\n");
-    status = envReadBlock(rx_data, 0, 256);
-    if(status != RDY_OK) {
-        chprintf(chp, "I2C read error %08x\r\n", i2c_errors);
-        return;
-    }
-
-    for(i=0; i<256; i++) {
-        if((i & 15) == 0) {
-            chprintf(chp, "%04x: ", i);
+    for(i=0; i<1024; i += 16) {
+        chprintf(chp, "%04x: ", i);
+        status = eepromReadBlock(rx_data, i, 16);
+        if(status != RDY_OK) {
+            chprintf(chp, "I2C read error %08x\r\n", i2c_errors);
+            return;
         }
-        chprintf(chp, "%02x ", rx_data[i]);
-        if((i & 15) == 15) {
-            chprintf(chp, "\r\n");
+        for(j=0; j<16; j++) {
+            chprintf(chp, "%02x ", rx_data[j]);
         }
+        chprintf(chp, "\r\n");
     }
-
 }
 
 static const ShellCommand commands[] = {
