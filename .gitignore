@@ -17,3 +17,6 @@ eagle.epf
 *.b#?
 *.l#?
 
+# Vim
+.*.swp
+
