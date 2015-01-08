@@ -66,24 +66,53 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
     } while (tp != NULL);
 }
 
-static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
-    Thread *tp;
+static void usage_on(BaseSequentialStream *chp)
+{
+    chprintf(chp, "Usage: on <1-4>\r\n");
+}
 
-    (void)argv;
-    if (argc > 0) {
-        chprintf(chp, "Usage: test\r\n");
+static void cmd_on(BaseSequentialStream *chp, int argc, char *argv[])
+{
+    if (argc != 1) {
+        usage_on(chp);
         return;
     }
-    tp = NULL;
-    /*
-    tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriority(),
-                             TestThread, chp);
-     */
-    if (tp == NULL) {
-        chprintf(chp, "out of memory\r\n");
+    int ch = atoi(argv[0]);
+    switch(ch) {
+        case 1: palSetPad(IOPORT1, GPIOA_OUT1); break;
+        case 2: palSetPad(IOPORT1, GPIOA_OUT2); break;
+        case 3: palSetPad(IOPORT1, GPIOA_OUT3); break;
+        case 4: palSetPad(IOPORT1, GPIOA_OUT4); break;
+        default: usage_on(chp); return;
+    }
+}
+
+static void usage_off(BaseSequentialStream *chp)
+{
+    chprintf(chp, "Usage: off <1-4>\r\n");
+}
+
+static void cmd_off(BaseSequentialStream *chp, int argc, char *argv[])
+{
+    if (argc == 0) {
+        palClearPad(IOPORT1, GPIOA_OUT1);
+        palClearPad(IOPORT1, GPIOA_OUT2);
+        palClearPad(IOPORT1, GPIOA_OUT3);
+        palClearPad(IOPORT1, GPIOA_OUT4);
         return;
     }
-    chThdWait(tp);
+    if (argc != 1) {
+        usage_off(chp);
+        return;
+    }
+    int ch = atoi(argv[0]);
+    switch(ch) {
+        case 1: palClearPad(IOPORT1, GPIOA_OUT1); break;
+        case 2: palClearPad(IOPORT1, GPIOA_OUT2); break;
+        case 3: palClearPad(IOPORT1, GPIOA_OUT3); break;
+        case 4: palClearPad(IOPORT1, GPIOA_OUT4); break;
+        default: usage_off(chp); return;
+    }
 }
 
 static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -118,9 +147,10 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 static const ShellCommand commands[] = {
+    {"on", cmd_on},
+    {"off", cmd_off},
     {"mem", cmd_mem},
     {"threads", cmd_threads},
-    {"test", cmd_test},
     {"write", cmd_write},
     {NULL, NULL}
 };

@@ -225,6 +225,6 @@ load: $(OPENOCD_LOADFILE)
 
 
 tags: 
-	ctags -R --c++-kinds=+p --fields=+iaS --extra=+q . ../common ../../os
+	ctags -R --c++-kinds=+p --fields=+iaS --extra=+q . ../common ../../os /usr/local/arm/arm-2013.11/arm-none-eabi/include
 
 
