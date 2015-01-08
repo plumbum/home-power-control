@@ -85,6 +85,7 @@ CSRC = $(PORTSRC) \
        $(CHIBIOS)/os/various/chprintf.c \
        $(CHIBIOS)/os/various/memstreams.c \
 	   usb_cdc.c \
+	   vshell.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
