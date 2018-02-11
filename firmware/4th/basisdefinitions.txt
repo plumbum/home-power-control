@@ -18,14 +18,6 @@ $40011400 constant PORTD_Base
 
 PORTA_BASE $08 + constant PORTA_IDR   \ RO              Input Data Register
 
-PORTB_BASE $00 + constant PORTB_CRL   \ Reset $44444444 Port Configuration Register Low
-PORTB_BASE $04 + constant PORTB_CRH   \ Reset $44444444 Port Configuration Register High
-PORTB_BASE $08 + constant PORTB_IDR   \ RO              Input Data Register
-PORTB_BASE $0C + constant PORTB_ODR   \ Reset 0         Output Data Register
-PORTB_BASE $10 + constant PORTB_BSRR  \ Reset 0         Port Bit Set/Reset Register
-PORTB_BASE $14 + constant PORTB_BRR   \ Reset 0         Port Bit Reset Register
-PORTB_BASE $18 + constant PORTB_LCKR  \ Reset 0         Port Configuration Lock Register
-
 PORTC_BASE $00 + constant PORTC_CRL   \ Reset $44444444 Port Configuration Register Low
 PORTC_BASE $04 + constant PORTC_CRH   \ Reset $44444444 Port Configuration Register High
 PORTC_BASE $08 + constant PORTC_IDR   \ RO              Input Data Register
@@ -34,13 +26,12 @@ PORTC_BASE $10 + constant PORTC_BSRR  \ Reset 0         Port Bit Set/Reset Regis
 PORTC_BASE $14 + constant PORTC_BRR   \ Reset 0         Port Bit Reset Register
 PORTC_BASE $18 + constant PORTC_LCKR  \ Reset 0         Port Configuration Lock Register
 
-8          constant button1    \ User button on PB8
-9          constant button2    \ User button on PB9
-1 0 lshift constant led-blue  \ Blue  LED on PB0
-1 1 lshift constant led-green \ Green LED on PB1
+1          constant button    \ User button on PA0
+1 8 lshift constant led-blue  \ Blue  LED on PC8
+1 9 lshift constant led-green \ Green LED on PC9
 
 : init
-  $11 PORTB_CRL ! \ Set LEDs as push-pull outputs
+  $11 PORTC_CRH ! \ Set LEDs as push-pull outputs
   cr
   Flamingo
   cr
@@ -52,8 +43,8 @@ PORTC_BASE $18 + constant PORTC_LCKR  \ Reset 0         Port Configuration Lock 
     key
     dup
     case
-      [char] g of led-green portb_odr xor! endof
-      [char] b of led-blue  portb_odr xor! endof
+      [char] g of led-green portc_odr xor! endof
+      [char] b of led-blue  portc_odr xor! endof
     endcase
     27 =
   until
@@ -113,7 +104,7 @@ $E000E018 constant NVIC_ST_CURRENT_R
 : ms ( ms -- ) 0 ?do 8000 delay-ticks loop ;
 
 
-: button? ( -- ? ) button1 portb_idr bit@ ;
+: button? ( -- ? ) button porta_idr bit@ ;
 
 : cornerstone ( Name ) ( -- )
   <builds begin here $3FF and while 0 h, repeat
