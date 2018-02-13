@@ -57,8 +57,10 @@ create -mon-yday
     ut2time days2date
 ;
 
+( datetime end: ) here hex.
+
+\ Simple test
+\ 1518512517 utc2msk ut2datetime cr . . . . . . . cr
 \ : test cr 18500 17000 do i days2date . . . cr loop ;
 \ test
-
-\ 1518512517 utc2msk ut2datetime cr . . . . . . . cr
 
