@@ -24,12 +24,14 @@
 @ All interrupt handlers work the same way and are generated with a macro:
 @------------------------------------------------------------------------------
 
+interrupt rtc
 interrupt exti0
 interrupt exti1
 interrupt exti2
 interrupt exti3
 interrupt exti4
 interrupt adc
+interrupt rtcalarm
 
 @------------------------------------------------------------------------------
 

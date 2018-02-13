@@ -27,7 +27,7 @@
 .word nullhandler+1 @ Position  0: Window Watchdog
 .word nullhandler+1 @ Position  1: PVD through EXTI line detection
 .word nullhandler+1 @ Position  2: Tamper and TimeStamp through EXTI line
-.word nullhandler+1 @ Position  3: RTC Wakeup
+.word irq_vektor_rtc+1 @ Position  3: RTC Wakeup
 .word nullhandler+1 @ Position  4: Flash
 .word nullhandler+1 @ Position  5: RCC
 .word irq_vektor_exti0+1 @ Position  6: EXTI Line 0
@@ -49,45 +49,45 @@
 .word 0  @ 21: Reserved
 .word 0  @ 22: Reserved
 
-.word nullhandler+1 @ Position 23:
-.word nullhandler+1 @ Position 24:
-.word nullhandler+1 @ Position 25:
-.word nullhandler+1 @ Position 26:
-.word nullhandler+1 @ Position 27:
-.word nullhandler+1 @ Position 28:
-.word nullhandler+1 @ Position 29:
-.word nullhandler+1 @ Position 30:
-.word nullhandler+1 @ Position 31:
-.word nullhandler+1 @ Position 32:
-.word nullhandler+1 @ Position 33:
-.word nullhandler+1 @ Position 34:
-.word nullhandler+1 @ Position 35:
-.word nullhandler+1 @ Position 36:
-.word nullhandler+1 @ Position 37:
-.word nullhandler+1 @ Position 38:
-.word nullhandler+1 @ Position 39:
-.word nullhandler+1 @ Position 40:
-.word nullhandler+1 @ Position 41:
-.word nullhandler+1 @ Position 42:
-.word nullhandler+1 @ Position 43:
-.word nullhandler+1 @ Position 44:
-.word nullhandler+1 @ Position 45:
+.word nullhandler+1 @ Position 23: EXTI9_5
+.word nullhandler+1 @ Position 24: TIM1_BRK
+.word nullhandler+1 @ Position 25: TIM1_UP
+.word nullhandler+1 @ Position 26: TIM1_TRG_COM
+.word nullhandler+1 @ Position 27: TIM1_CC
+.word nullhandler+1 @ Position 28: TIM2
+.word nullhandler+1 @ Position 29: TIM3
+.word nullhandler+1 @ Position 30: TIM4
+.word nullhandler+1 @ Position 31: I2C1_EV
+.word nullhandler+1 @ Position 32: I2C1_ER
+.word nullhandler+1 @ Position 33: I2C2_EV
+.word nullhandler+1 @ Position 34: I2C2_ER
+.word nullhandler+1 @ Position 35: SPI1
+.word nullhandler+1 @ Position 36: SPI2
+.word nullhandler+1 @ Position 37: USART1
+.word nullhandler+1 @ Position 38: USART2
+.word nullhandler+1 @ Position 39: USART3
+.word nullhandler+1 @ Position 40: EXTI15_10
+.word irq_vektor_rtcalarm+1 @ Position 41: RTCAlarm
+.word nullhandler+1 @ Position 42: CEC global interrupt
+.word nullhandler+1 @ Position 43: TIM12
+.word nullhandler+1 @ Position 44: TIM13
+.word nullhandler+1 @ Position 45: TIM14
 
 .word 0  @ 46: Reserved
 .word 0  @ 47: Reserved
-.word nullhandler+1 @ Position 48:
+.word nullhandler+1 @ Position 48: FSMC
 .word 0  @ 49: Reserved
 
-.word nullhandler+1 @ Position 50:
-.word nullhandler+1 @ Position 51:
-.word nullhandler+1 @ Position 52:
-.word nullhandler+1 @ Position 53:
-.word nullhandler+1 @ Position 54:
-.word nullhandler+1 @ Position 55:
-.word nullhandler+1 @ Position 56:
-.word nullhandler+1 @ Position 57:
-.word nullhandler+1 @ Position 58:
-.word nullhandler+1 @ Position 59:
-.word nullhandler+1 @ Position 60:
+.word nullhandler+1 @ Position 50: TIM5
+.word nullhandler+1 @ Position 51: SPI3
+.word nullhandler+1 @ Position 52: UART4
+.word nullhandler+1 @ Position 53: UART5
+.word nullhandler+1 @ Position 54: TIM6_DAC
+.word nullhandler+1 @ Position 55: TIM7
+.word nullhandler+1 @ Position 56: DMA2_Channel1
+.word nullhandler+1 @ Position 57: DMA2_Channel2
+.word nullhandler+1 @ Position 58: DMA2_Channel3
+.word nullhandler+1 @ Position 59: DMA2_Channel4
+.word nullhandler+1 @ Position 60: DMA2_Channel5
 
 @ -----------------------------------------------------------------------------
